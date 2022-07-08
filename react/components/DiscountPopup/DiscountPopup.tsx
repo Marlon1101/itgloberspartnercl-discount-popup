@@ -1,12 +1,16 @@
 import React, {useState, useEffect} from "react";
 import { Modal, Input, Alert, Button  } from 'vtex.styleguide'
+import { useCssHandles } from "vtex.css-handles"
 import axios from "axios"
+import "./discountPopup.css"
 
 type Props = {
   accountName: string
   environment: string
   percentageDiscount: number
 }
+
+
 
 const DiscountPopup = ({accountName, environment, percentageDiscount}: Props) => {
   const [modal, setModal] = useState(false)
@@ -46,13 +50,24 @@ const DiscountPopup = ({accountName, environment, percentageDiscount}: Props) =>
   const handleModalAlert = () => {
     setModalAlert({...modalAlert, state: false})
   }
+
+  const CSS_HANDLES = [
+    "container",
+    "modal",
+    "title",
+    "subTitle",
+    "input"
+  ]
+  const handles = useCssHandles(CSS_HANDLES)
+
   return(
-    <>
+    <div>
     {
       modalAlert.type === "success"
       ? <Modal centered isOpen={modalAlert.state} onClose={handleModalAlert}>
         <Alert type="success">Felicidades, registrate para obtener tu descuento</Alert>
         </Modal>
+
       : <Modal centered isOpen={modalAlert.state} onClose={handleModalAlert}>
         <Alert type="warning">Ya estás registrado</Alert>
         </Modal>
@@ -61,15 +76,16 @@ const DiscountPopup = ({accountName, environment, percentageDiscount}: Props) =>
       setModal(!modal)
       localStorage.setItem("ingreso", "1")
       }}>
-      <div>
-        <h1>{percentageDiscount}% en tu primera compra</h1>
-        <Input error={error.state} errorMessage={error.message} onChange={(element:{target:{value: string}}) => handleChange(element)} type="email" placeholder="Correo Electrónico"/>
+      <div className={handles["container"]}>
+        <h1 className={handles["title"]}>Obtén {percentageDiscount}% en tu primera compra</h1>
+        <h3 className={handles["subTitle"]}>Ingresa tu correo para obtener tu descuento</h3>
+        <Input className={handles["input"]} error={error.state} errorMessage={error.message} onChange={(element:{target:{value: string}}) => handleChange(element)} type="email" placeholder="Correo Electrónico"/>
         <div>
-        <Button onClick={handleModal}>Enviar</Button>
+        <Button variation="primary" onClick={handleModal}>Enviar</Button>
         </div>
       </div>
     </Modal>
-    </>
+    </div>
   )
 }
 
